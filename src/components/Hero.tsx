@@ -127,7 +127,7 @@ const Hero: React.FC = () => {
             <div className="relative inline-block">
               <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 p-1">
                 <img
-                  src="/profile.jpg/WhatsApp Image 2025-07-07 at 12.47.38_2cb79d8f.jpg"
+                  src="/profile.jpg/profile.jpg"
                   alt="Avi Sharma"
                   className="w-full h-full rounded-full object-cover"
                 />

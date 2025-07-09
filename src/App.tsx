@@ -37,11 +37,13 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // Scroll to home section on initial load
-    const homeSection = document.getElementById('home');
-    if (homeSection) {
-      homeSection.scrollIntoView({ behavior: 'auto' });
-    }
+    // Scroll to home section on initial load (after DOM is ready)
+    setTimeout(() => {
+      const homeSection = document.getElementById('home');
+      if (homeSection) {
+        homeSection.scrollIntoView({ behavior: 'auto' });
+      }
+    }, 100);
   }, []);
 
   // Custom cursor effect
