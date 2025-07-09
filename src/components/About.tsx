@@ -86,7 +86,7 @@ const About: React.FC = () => {
             <div className="relative">
               <div className="w-48 h-48 mx-auto rounded-2xl bg-gradient-to-br from-cyan-400/20 to-blue-500/20 p-1">
                 <img
-                  src="/public/profile.jpg/WhatsApp Image 2025-07-07 at 12.47.38_2cb79d8f.jpg"
+                  src="/profile.jpg/profile.jpg"
                   alt="Avi Sharma"
                   className="w-full h-full rounded-2xl object-cover"
                 />
