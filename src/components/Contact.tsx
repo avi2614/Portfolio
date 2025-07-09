@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, Github, Linkedin, Instagram } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ const Contact: React.FC = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -21,16 +23,37 @@ const Contact: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError('');
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsSubmitting(false);
-    setSubmitted(true);
-    setFormData({ name: '', email: '', message: '' });
-    
-    // Reset submitted state after 3 seconds
-    setTimeout(() => setSubmitted(false), 3000);
+    try {
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message,
+        to_email: 'avisharma2614@gmail.com'
+      };
+
+      await emailjs.send(
+        'service_4bag4tp',
+        'template_bh8ttnv',
+        templateParams,
+        'vy1SbDKFaSPv6EIht'
+      );
+      
+      setIsSubmitting(false);
+      setSubmitted(true);
+      setFormData({ name: '', email: '', message: '' });
+      
+      // Reset submitted state after 5 seconds
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (err) {
+      console.error('Email sending failed:', err);
+      setIsSubmitting(false);
+      setError('Failed to send message. Please try again or contact me directly at avisharma2614@gmail.com');
+      
+      // Clear error after 5 seconds
+      setTimeout(() => setError(''), 5000);
+    }
   };
 
   const contactInfo = [
@@ -258,6 +281,18 @@ const Contact: React.FC = () => {
                     whileFocus={{ scale: 1.02 }}
                   />
                 </motion.div>
+
+                {/* Error Message */}
+                {error && (
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="text-red-400 text-sm"
+                  >
+                    {error}
+                  </motion.p>
+                )}
 
                 {/* Submit Button */}
                 <motion.button
