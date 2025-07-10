@@ -57,7 +57,7 @@ const Hero: React.FC = () => {
   ), []);
 
   return (
-    <section id="home" className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+    <section id="home" className="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-black pt-16">
       {/* Animated background */}
       <div className="absolute inset-0">
         {/* Matrix-style background */}
@@ -127,7 +127,7 @@ const Hero: React.FC = () => {
             <div className="relative inline-block">
               <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 p-1">
                 <img
-                  src="/profile.jpg/profile.jpg"
+                  src="/profile.jpg"
                   alt="Avi Sharma"
                   className="w-full h-full rounded-full object-cover"
                 />
@@ -142,7 +142,7 @@ const Hero: React.FC = () => {
 
           {/* Name and Title */}
           <motion.h1
-            className="text-5xl md:text-7xl font-bold mb-4"
+            className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -153,7 +153,7 @@ const Hero: React.FC = () => {
           </motion.h1>
 
           <motion.h2
-            className="text-xl md:text-2xl text-cyan-400 mb-6 font-mono"
+            className="text-lg sm:text-xl md:text-2xl text-cyan-400 mb-6 font-mono"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -163,7 +163,7 @@ const Hero: React.FC = () => {
 
           {/* Bio */}
           <motion.p
-            className="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed"
+            className="text-base sm:text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed px-4"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}

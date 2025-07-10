@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import ThemeToggle from './ThemeToggle';
 
 interface NavigationProps {
   activeSection: string;
@@ -8,6 +9,7 @@ interface NavigationProps {
 
 const Navigation: React.FC<NavigationProps> = ({ activeSection, setActiveSection }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
     { id: 'home', label: 'Home' },
@@ -33,6 +35,7 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection, setActiveSection
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
       setActiveSection(sectionId);
+      setIsMobileMenuOpen(false); // Close mobile menu after navigation
     }
   };
 
@@ -47,16 +50,18 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection, setActiveSection
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
+          {/* Left: Logo */}
           <motion.div
             className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent"
             whileHover={{ scale: 1.05 }}
           >
             Avi.dev
           </motion.div>
-          
-          <div className="hidden md:flex space-x-8">
+
+          {/* Center: Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-8">
             {navItems.map((item) => (
               <motion.button
                 key={item.id}
@@ -82,18 +87,62 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection, setActiveSection
             ))}
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <motion.button
-              className="text-gray-300 hover:text-cyan-400 p-2"
-              whileTap={{ scale: 0.95 }}
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </motion.button>
+          {/* Right: Theme Toggle and Mobile Menu */}
+          <div className="flex items-center space-x-4">
+            <ThemeToggle />
+            
+            {/* Mobile menu button */}
+            <div className="lg:hidden">
+              <motion.button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-gray-300 hover:text-cyan-400 p-2"
+                whileTap={{ scale: 0.95 }}
+              >
+                <motion.div
+                  animate={{ rotate: isMobileMenuOpen ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                </motion.div>
+              </motion.button>
+            </div>
           </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="lg:hidden bg-gray-900/95 backdrop-blur-md border-t border-cyan-500/20"
+            >
+              <div className="py-4 space-y-2">
+                {navItems.map((item, index) => (
+                  <motion.button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className={`w-full text-left px-4 py-3 text-sm font-medium transition-colors duration-200 ${
+                      activeSection === item.id
+                        ? 'text-cyan-400 bg-cyan-400/10'
+                        : 'text-gray-300 hover:text-cyan-400 hover:bg-gray-800/50'
+                    }`}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {item.label}
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.nav>
   );

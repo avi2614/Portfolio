@@ -9,12 +9,10 @@ const ThemeToggle: React.FC = () => {
   return (
     <motion.button
       onClick={toggleTheme}
-      className="fixed top-4 right-4 z-50 p-3 rounded-full bg-gray-800/80 dark:bg-gray-200/80 backdrop-blur-sm border border-gray-600/50 dark:border-gray-300/50 hover:border-cyan-400/50 transition-all duration-300"
+      className="p-2 rounded-full bg-gray-800/90 dark:bg-gray-200/90 backdrop-blur-sm border border-gray-600/50 dark:border-gray-300/50 hover:border-cyan-400/50 transition-all duration-300 shadow-lg ml-2"
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, delay: 1 }}
+      aria-label="Toggle theme"
     >
       <motion.div
         initial={false}

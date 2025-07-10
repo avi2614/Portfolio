@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Navigation from './components/Navigation';
-import ThemeToggle from './components/ThemeToggle';
 import AIAssistant from './components/AIAssistant';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -42,63 +41,69 @@ function App() {
       const homeSection = document.getElementById('home');
       if (homeSection) {
         homeSection.scrollIntoView({ behavior: 'auto' });
+        // Force scroll to top to ensure home is visible
+        window.scrollTo(0, 0);
       }
-    }, 100);
+    }, 200); // Increased timeout for mobile devices
   }, []);
 
-  // Custom cursor effect
+  // Custom cursor effect (desktop only)
   useEffect(() => {
-    const cursor = document.createElement('div');
-    cursor.className = 'custom-cursor';
-    cursor.style.cssText = `
-      position: fixed;
-      width: 20px;
-      height: 20px;
-      background: linear-gradient(45deg, #06b6d4, #3b82f6);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      mix-blend-mode: difference;
-      transition: transform 0.1s ease;
-    `;
-    document.body.appendChild(cursor);
+    // Only add custom cursor on desktop devices
+    if (window.innerWidth > 768) {
+      const cursor = document.createElement('div');
+      cursor.className = 'custom-cursor';
+      cursor.style.cssText = `
+        position: fixed;
+        width: 20px;
+        height: 20px;
+        background: linear-gradient(45deg, #06b6d4, #3b82f6);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        mix-blend-mode: difference;
+        transition: transform 0.1s ease;
+      `;
+      document.body.appendChild(cursor);
 
-    const moveCursor = (e: MouseEvent) => {
-      cursor.style.left = e.clientX - 10 + 'px';
-      cursor.style.top = e.clientY - 10 + 'px';
-    };
+      const moveCursor = (e: MouseEvent) => {
+        cursor.style.left = e.clientX - 10 + 'px';
+        cursor.style.top = e.clientY - 10 + 'px';
+      };
 
-    const scaleCursor = () => {
-      cursor.style.transform = 'scale(1.5)';
-    };
+      const scaleCursor = () => {
+        cursor.style.transform = 'scale(1.5)';
+      };
 
-    const resetCursor = () => {
-      cursor.style.transform = 'scale(1)';
-    };
+      const resetCursor = () => {
+        cursor.style.transform = 'scale(1)';
+      };
 
-    document.addEventListener('mousemove', moveCursor);
-    document.addEventListener('mousedown', scaleCursor);
-    document.addEventListener('mouseup', resetCursor);
+      document.addEventListener('mousemove', moveCursor);
+      document.addEventListener('mousedown', scaleCursor);
+      document.addEventListener('mouseup', resetCursor);
 
-    // Add hover effects for interactive elements
-    const interactiveElements = document.querySelectorAll('button, a, input, textarea');
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', scaleCursor);
-      el.addEventListener('mouseleave', resetCursor);
-    });
+      // Add hover effects for interactive elements
+      const interactiveElements = document.querySelectorAll('button, a, input, textarea');
+      interactiveElements.forEach(el => {
+        el.addEventListener('mouseenter', scaleCursor);
+        el.addEventListener('mouseleave', resetCursor);
+      });
 
-    return () => {
-      document.removeEventListener('mousemove', moveCursor);
-      document.removeEventListener('mousedown', scaleCursor);
-      document.removeEventListener('mouseup', resetCursor);
-      document.body.removeChild(cursor);
-    };
+      return () => {
+        document.removeEventListener('mousemove', moveCursor);
+        document.removeEventListener('mousedown', scaleCursor);
+        document.removeEventListener('mouseup', resetCursor);
+        if (document.body.contains(cursor)) {
+          document.body.removeChild(cursor);
+        }
+      };
+    }
   }, []);
 
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-gray-900 dark:bg-gray-900 bg-white text-gray-900 dark:text-white overflow-x-hidden transition-colors duration-300">
-        <ThemeToggle />
         <Navigation activeSection={activeSection} setActiveSection={setActiveSection} />
         <Hero />
         <About />

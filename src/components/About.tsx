@@ -84,13 +84,11 @@ const About: React.FC = () => {
               </div>
             </div>
             <div className="relative">
-              <div className="w-48 h-48 mx-auto rounded-2xl bg-gradient-to-br from-cyan-400/20 to-blue-500/20 p-1">
-                <img
-                  src="/profile.jpg/profile.jpg"
-                  alt="Avi Sharma"
-                  className="w-full h-full rounded-2xl object-cover"
-                />
-              </div>
+              <img
+                src="/profile.jpg"
+                alt="Avi Sharma"
+                className="w-32 h-32 rounded-full object-cover border-4 border-cyan-400 shadow-lg mx-auto mb-6"
+              />
               <motion.div
                 className="absolute -inset-2 rounded-2xl border border-cyan-400/30"
                 animate={{ 
