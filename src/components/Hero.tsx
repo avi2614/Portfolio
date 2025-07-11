@@ -35,7 +35,7 @@ const Hero: React.FC = () => {
 
   const downloadResume = () => {
     const link = document.createElement('a');
-    link.href = '/resume.pdf';
+    link.href = '/Avi_Sharma_Resume.pdf';
     link.download = 'Avi_Sharma_Resume.pdf';
     link.click();
   };

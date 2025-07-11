@@ -35,7 +35,7 @@ const Terminal: React.FC = () => {
     'sudo hire avi': (_args?: string) => {
       // Trigger resume download
       const link = document.createElement('a');
-      link.href = '/resume.pdf';
+      link.href = '/Avi_Sharma_Resume.pdf';
       link.download = 'Avi_Sharma_Resume.pdf';
       link.click();
       return 'Resume downloaded successfully! 📄';
