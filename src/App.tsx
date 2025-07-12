@@ -70,102 +70,93 @@ function App() {
       // Debug: Check if cursor is working
       console.log('Initializing custom cursor for desktop');
       
-      // Add a test to ensure cursor is visible
-      const testCursorVisibility = () => {
-        if (cursor && cursor.style.opacity === '1') {
-          console.log('Custom cursor is visible');
-        } else {
-          console.log('Custom cursor visibility issue detected');
-        }
-      };
-      
-      setTimeout(testCursorVisibility, 500);
-      const cursor = document.createElement('div');
-      cursor.className = 'custom-cursor';
-      cursor.style.cssText = `
-        position: fixed;
-        width: 20px;
-        height: 20px;
-        background: linear-gradient(45deg, #06b6d4, #3b82f6);
-        border: 2px solid rgba(255, 255, 255, 0.8);
-        border-radius: 50%;
-        pointer-events: none;
-        z-index: 99999;
-        mix-blend-mode: difference;
-        transform: translate3d(0, 0, 0);
-        will-change: transform;
-        transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-        opacity: 1;
-        box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
-        top: 0;
-        left: 0;
-      `;
-      document.body.appendChild(cursor);
-      
-      // Set initial position immediately
-      cursor.style.transform = 'translate3d(0, 0, 0)';
+      try {
+        const cursor = document.createElement('div');
+        cursor.className = 'custom-cursor';
+        cursor.style.cssText = `
+          position: fixed;
+          width: 20px;
+          height: 20px;
+          background: linear-gradient(45deg, #06b6d4, #3b82f6);
+          border: 2px solid rgba(255, 255, 255, 0.8);
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 99999;
+          mix-blend-mode: difference;
+          transform: translate3d(0, 0, 0);
+          will-change: transform;
+          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+          opacity: 0;
+          box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+          left: 0;
+          top: 0;
+        `;
+        document.body.appendChild(cursor);
+        
+        // Show cursor after a short delay to ensure it's properly positioned
+        setTimeout(() => {
+          cursor.style.opacity = '1';
+          // Set initial position
+          cursor.style.transform = 'translate3d(0, 0, 0)';
+        }, 100);
 
-      let rafId: number;
-      let currentX = 0;
-      let currentY = 0;
-      
-      const moveCursor = (e: MouseEvent) => {
-        cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(() => {
-          currentX = e.clientX - 10;
-          currentY = e.clientY - 10;
-          cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+        let rafId: number;
+        let currentX = 0;
+        let currentY = 0;
+        
+        const moveCursor = (e: MouseEvent) => {
+          cancelAnimationFrame(rafId);
+          rafId = requestAnimationFrame(() => {
+            currentX = e.clientX - 10;
+            currentY = e.clientY - 10;
+            cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+          });
+        };
+
+        const scaleCursor = () => {
+          cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) scale(1.5)`;
+        };
+
+        const resetCursor = () => {
+          cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) scale(1)`;
+        };
+
+        document.addEventListener('mousemove', moveCursor, { passive: true });
+        document.addEventListener('mousedown', scaleCursor);
+        document.addEventListener('mouseup', resetCursor);
+
+        // Add hover effects for interactive elements
+        const interactiveElements = document.querySelectorAll('button, a, input, textarea');
+        interactiveElements.forEach(el => {
+          el.addEventListener('mouseenter', scaleCursor);
+          el.addEventListener('mouseleave', resetCursor);
         });
-      };
 
-      const scaleCursor = () => {
-        cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) scale(1.5)`;
-      };
+        // Fallback: show default cursor if custom cursor fails
+        const fallbackTimer = setTimeout(() => {
+          if (!cursor.parentNode) {
+            console.log('Custom cursor failed, falling back to default cursor');
+            document.body.style.cursor = 'auto';
+          }
+        }, 2000);
 
-      const resetCursor = () => {
-        cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) scale(1)`;
-      };
-
-      document.addEventListener('mousemove', moveCursor, { passive: true });
-      document.addEventListener('mousedown', scaleCursor);
-      document.addEventListener('mouseup', resetCursor);
-
-      // Add hover effects for interactive elements
-      const interactiveElements = document.querySelectorAll('button, a, input, textarea');
-      interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', scaleCursor);
-        el.addEventListener('mouseleave', resetCursor);
-      });
-
-      // Fallback: show default cursor if custom cursor fails
-      const fallbackTimer = setTimeout(() => {
-        if (!cursor.parentNode || cursor.style.opacity === '0') {
-          console.log('Custom cursor failed, showing default cursor');
+        return () => {
+          document.removeEventListener('mousemove', moveCursor);
+          document.removeEventListener('mousedown', scaleCursor);
+          document.removeEventListener('mouseup', resetCursor);
+          cancelAnimationFrame(rafId);
+          clearTimeout(fallbackTimer);
+          if (document.body.contains(cursor)) {
+            document.body.removeChild(cursor);
+          }
+          // Restore default cursor
           document.body.style.cursor = 'auto';
-          // Remove the cursor: none from CSS
-          const style = document.createElement('style');
-          style.textContent = `
-            @media (min-width: 769px) {
-              * { cursor: auto !important; }
-              button, a, input, textarea, select { cursor: pointer !important; }
-            }
-          `;
-          document.head.appendChild(style);
-        }
-      }, 1000);
-
-      return () => {
-        document.removeEventListener('mousemove', moveCursor);
-        document.removeEventListener('mousedown', scaleCursor);
-        document.removeEventListener('mouseup', resetCursor);
-        cancelAnimationFrame(rafId);
-        clearTimeout(fallbackTimer);
-        if (document.body.contains(cursor)) {
-          document.body.removeChild(cursor);
-        }
-        // Restore default cursor
+        };
+      } catch (error) {
+        console.error('Error initializing custom cursor:', error);
+        // Fallback to default cursor
         document.body.style.cursor = 'auto';
-      };
+      }
     }
   }, []);
 

@@ -75,7 +75,6 @@ html {
     opacity: 1 !important;
     position: fixed !important;
     z-index: 99999 !important;
-    pointer-events: none !important;
   }
 }
 
@@ -295,6 +294,7 @@ pre, code {
   .custom-cursor {
     display: none !important;
   }
+  
 }
 
 /* Ultra-smooth performance optimizations */
@@ -331,7 +331,6 @@ img {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }
 
