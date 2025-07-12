@@ -69,6 +69,17 @@ function App() {
     if (window.innerWidth > 768) {
       // Debug: Check if cursor is working
       console.log('Initializing custom cursor for desktop');
+      
+      // Add a test to ensure cursor is visible
+      const testCursorVisibility = () => {
+        if (cursor && cursor.style.opacity === '1') {
+          console.log('Custom cursor is visible');
+        } else {
+          console.log('Custom cursor visibility issue detected');
+        }
+      };
+      
+      setTimeout(testCursorVisibility, 500);
       const cursor = document.createElement('div');
       cursor.className = 'custom-cursor';
       cursor.style.cssText = `
@@ -79,22 +90,20 @@ function App() {
         border: 2px solid rgba(255, 255, 255, 0.8);
         border-radius: 50%;
         pointer-events: none;
-        z-index: 9999;
+        z-index: 99999;
         mix-blend-mode: difference;
         transform: translate3d(0, 0, 0);
         will-change: transform;
         transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-        opacity: 0;
+        opacity: 1;
         box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        top: 0;
+        left: 0;
       `;
       document.body.appendChild(cursor);
       
-      // Show cursor after a short delay to ensure it's properly positioned
-      setTimeout(() => {
-        cursor.style.opacity = '1';
-        // Set initial position
-        cursor.style.transform = 'translate3d(0, 0, 0)';
-      }, 100);
+      // Set initial position immediately
+      cursor.style.transform = 'translate3d(0, 0, 0)';
 
       let rafId: number;
       let currentX = 0;
@@ -130,10 +139,20 @@ function App() {
 
       // Fallback: show default cursor if custom cursor fails
       const fallbackTimer = setTimeout(() => {
-        if (!cursor.parentNode) {
+        if (!cursor.parentNode || cursor.style.opacity === '0') {
+          console.log('Custom cursor failed, showing default cursor');
           document.body.style.cursor = 'auto';
+          // Remove the cursor: none from CSS
+          const style = document.createElement('style');
+          style.textContent = `
+            @media (min-width: 769px) {
+              * { cursor: auto !important; }
+              button, a, input, textarea, select { cursor: pointer !important; }
+            }
+          `;
+          document.head.appendChild(style);
         }
-      }, 2000);
+      }, 1000);
 
       return () => {
         document.removeEventListener('mousemove', moveCursor);

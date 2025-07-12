@@ -57,8 +57,8 @@ Visit: https://github.com/avi2614`;
     },
 
     'avi --linkedin': (_args?: string) => {
-      window.open('https://linkedin.com/in/avi-sharma', '_blank');
-      return 'Opening LinkedIn profile... 🔗';
+  window.open('https://www.linkedin.com/in/avi-sharma-48b514277/', '_blank');
+  return 'Opening LinkedIn profile... 🔗';
     },
 
     'avi --instagram': (_args?: string) => {

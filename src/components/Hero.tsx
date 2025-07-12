@@ -224,7 +224,7 @@ const Hero: React.FC = () => {
           >
             {[
               { icon: Github, href: 'https://github.com/avi2614', label: 'GitHub' },
-              { icon: Linkedin, href: 'https://linkedin.com/in/avi-sharma', label: 'LinkedIn' },
+              { icon: Linkedin, href: 'https://www.linkedin.com/in/avi-sharma-48b514277/', label: 'LinkedIn' },
               { icon: Instagram, href: 'https://instagram.com/av.eeei', label: 'Instagram' }
             ].map(({ icon: Icon, href, label }) => (
               <motion.a

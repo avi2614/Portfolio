@@ -86,8 +86,8 @@ const Contact: React.FC = () => {
     },
     {
       icon: Linkedin,
-      label: 'LinkedIn',
-      href: 'https://linkedin.com/in/avi-sharma',
+label: 'LinkedIn',
+href: 'https://www.linkedin.com/in/avi-sharma-48b514277/',
       color: 'hover:text-blue-400'
     },
     {

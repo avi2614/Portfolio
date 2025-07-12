@@ -73,6 +73,9 @@ html {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+    position: fixed !important;
+    z-index: 99999 !important;
+    pointer-events: none !important;
   }
 }
 
