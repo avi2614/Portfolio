@@ -122,7 +122,7 @@ const Hero: React.FC = () => {
             className="mb-8"
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
-            transition={{ duration: 1, type: "spring", stiffness: 100 }}
+            transition={{ duration: 1.2, type: "spring", stiffness: 80, damping: 15 }}
           >
             <div className="relative inline-block">
               <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 p-1">
@@ -145,7 +145,7 @@ const Hero: React.FC = () => {
             className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
           >
             <span className="bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">
               Avi Sharma
@@ -156,7 +156,7 @@ const Hero: React.FC = () => {
             className="text-lg sm:text-xl md:text-2xl text-cyan-400 mb-6 font-mono"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
+            transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
           >
             DevOps Engineer | Full Stack Developer
           </motion.h2>
@@ -166,7 +166,7 @@ const Hero: React.FC = () => {
             className="text-base sm:text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed px-4"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
+            transition={{ duration: 1, delay: 0.7, ease: "easeOut" }}
           >
             I'm a problem-solving enthusiast who builds scalable systems, automates infrastructure, 
             and creates powerful full-stack apps. I bridge the gap between development and operations.
@@ -192,11 +192,11 @@ const Hero: React.FC = () => {
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
+            transition={{ duration: 1, delay: 1.2, ease: "easeOut" }}
           >
             <motion.button
               onClick={downloadResume}
-              className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-cyan-500/25"
+              className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-500 shadow-lg hover:shadow-cyan-500/25 smooth-hover"
               whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(6, 182, 212, 0.4)" }}
               whileTap={{ scale: 0.95 }}
             >

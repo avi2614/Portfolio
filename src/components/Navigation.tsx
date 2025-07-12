@@ -30,25 +30,66 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection, setActiveSection
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile menu when clicking outside and prevent body scroll
+  useEffect(() => {
+    const handleClickOutside = (event: Event) => {
+      const target = event.target as Element;
+      if (isMobileMenuOpen && !target.closest('nav')) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    const handleTouchOutside = (event: TouchEvent) => {
+      const target = event.target as Element;
+      if (isMobileMenuOpen && !target.closest('nav')) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleTouchOutside);
+      // Prevent body scroll when mobile menu is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleTouchOutside);
+      document.body.style.overflow = 'auto';
+    };
+  }, [isMobileMenuOpen]);
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setActiveSection(sectionId);
-      setIsMobileMenuOpen(false); // Close mobile menu after navigation
+      // Add a small delay for mobile to ensure menu closes properly
+      const delay = window.innerWidth <= 768 ? 100 : 0;
+      
+      setTimeout(() => {
+        element.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest'
+        });
+        setActiveSection(sectionId);
+        setIsMobileMenuOpen(false); // Close mobile menu after navigation
+      }, delay);
     }
   };
 
   return (
     <motion.nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled 
           ? 'bg-gray-900/95 backdrop-blur-md border-b border-cyan-500/20' 
           : 'bg-transparent'
       }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
     >
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -95,8 +136,9 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection, setActiveSection
             <div className="lg:hidden">
               <motion.button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-gray-300 hover:text-cyan-400 p-2"
+                className="text-gray-300 hover:text-cyan-400 p-3 touch-manipulation"
                 whileTap={{ scale: 0.95 }}
+                aria-label="Toggle mobile menu"
               >
                 <motion.div
                   animate={{ rotate: isMobileMenuOpen ? 180 : 0 }}
@@ -118,23 +160,24 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection, setActiveSection
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="lg:hidden bg-gray-900/95 backdrop-blur-md border-t border-cyan-500/20"
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="lg:hidden bg-gray-900/95 backdrop-blur-md border-t border-cyan-500/20 overflow-hidden"
             >
               <div className="py-4 space-y-2">
                 {navItems.map((item, index) => (
                   <motion.button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className={`w-full text-left px-4 py-3 text-sm font-medium transition-colors duration-200 ${
+                    className={`w-full text-left px-4 py-4 text-sm font-medium transition-colors duration-200 touch-manipulation ${
                       activeSection === item.id
                         ? 'text-cyan-400 bg-cyan-400/10'
                         : 'text-gray-300 hover:text-cyan-400 hover:bg-gray-800/50'
                     }`}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    transition={{ duration: 0.4, delay: index * 0.08, ease: "easeOut" }}
                     whileTap={{ scale: 0.95 }}
+                    aria-label={`Navigate to ${item.label} section`}
                   >
                     {item.label}
                   </motion.button>

@@ -20,23 +20,87 @@
   background: linear-gradient(to bottom, #0891b2, #2563eb);
 }
 
-/* Smooth scrolling */
+/* Smooth scrolling and performance optimizations */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 80px;
 }
 
-/* Custom cursor styles */
+/* Performance optimizations */
 * {
-  cursor: none;
+  box-sizing: border-box;
 }
 
-button, a, input, textarea, select {
-  cursor: none !important;
+/* Hardware acceleration for smooth animations */
+.smooth-animate {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
-/* Hide default cursor on interactive elements */
-button:hover, a:hover, input:hover, textarea:hover {
-  cursor: none !important;
+/* Optimized transitions */
+.smooth-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth hover effects */
+.smooth-hover {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.smooth-hover:hover {
+  transform: translate3d(0, -2px, 0);
+}
+
+/* Custom cursor styles - Desktop only */
+@media (min-width: 769px) {
+  * {
+    cursor: none !important;
+  }
+
+  button, a, input, textarea, select {
+    cursor: none !important;
+  }
+
+  /* Hide default cursor on interactive elements */
+  button:hover, a:hover, input:hover, textarea:hover {
+    cursor: none !important;
+  }
+  
+  /* Ensure custom cursor is visible */
+  .custom-cursor {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Mobile cursor styles */
+@media (max-width: 768px) {
+  * {
+    cursor: auto !important;
+  }
+
+  button, a, input, textarea, select {
+    cursor: pointer !important;
+  }
+  
+  /* Hide custom cursor on mobile */
+  .custom-cursor {
+    display: none !important;
+  }
+  
+  /* Improve touch targets for mobile */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Ensure mobile navigation is accessible */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
 }
 
 /* Typography enhancements */
@@ -46,6 +110,9 @@ body {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 .font-mono {
@@ -75,29 +142,82 @@ h1, h2, h3, h4, h5, h6 {
   text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
 }
 
-/* Custom animations */
+/* Optimized custom animations */
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -20px, 0); }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(6, 182, 212, 0.6); }
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.6);
+    transform: scale(1.05);
+  }
 }
 
 @keyframes matrix-rain {
-  0% { transform: translateY(-100vh); opacity: 1; }
-  100% { transform: translateY(100vh); opacity: 0; }
+  0% { transform: translate3d(0, -100vh, 0); opacity: 1; }
+  100% { transform: translate3d(0, 100vh, 0); opacity: 0; }
+}
+
+@keyframes smooth-fade-in {
+  0% { 
+    opacity: 0;
+    transform: translate3d(0, 30px, 0);
+  }
+  100% { 
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes smooth-scale-in {
+  0% { 
+    opacity: 0;
+    transform: scale(0.9) translate3d(0, 0, 0);
+  }
+  100% { 
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
 }
 
 .float-animation {
   animation: float 6s ease-in-out infinite;
+  will-change: transform;
 }
 
 .pulse-glow {
   animation: pulse-glow 3s ease-in-out infinite;
+  will-change: transform, box-shadow;
 }
+
+.smooth-fade-in {
+  animation: smooth-fade-in 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.smooth-scale-in {
+  animation: smooth-scale-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Stagger animations for lists */
+.stagger-animate > * {
+  opacity: 0;
+  animation: smooth-fade-in 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.stagger-animate > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-animate > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-animate > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-animate > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-animate > *:nth-child(5) { animation-delay: 0.5s; }
+.stagger-animate > *:nth-child(6) { animation-delay: 0.6s; }
+.stagger-animate > *:nth-child(7) { animation-delay: 0.7s; }
+.stagger-animate > *:nth-child(8) { animation-delay: 0.8s; }
 
 /* Terminal cursor blink */
 @keyframes blink {
@@ -172,9 +292,43 @@ pre, code {
   .custom-cursor {
     display: none !important;
   }
-  
-  * {
-    cursor: auto !important;
+}
+
+/* Ultra-smooth performance optimizations */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Optimize GPU acceleration */
+.gpu-accelerated {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Smooth text rendering */
+.smooth-text {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Optimize images */
+img {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 

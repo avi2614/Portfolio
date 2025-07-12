@@ -13,29 +13,43 @@ import Contact from './components/Contact';
 
 function App() {
   const [activeSection, setActiveSection] = useState('home');
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
+    
     const handleScroll = () => {
-      const sections = ['home', 'about', 'education', 'internships', 'projects', 'techstack', 'terminal', 'contact'];
-      const scrollPosition = window.scrollY + 100;
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const sections = ['home', 'about', 'education', 'internships', 'projects', 'techstack', 'terminal', 'contact'];
+          const scrollPosition = window.scrollY + 100;
 
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            setActiveSection(section);
-            break;
+          for (const section of sections) {
+            const element = document.getElementById(section);
+            if (element) {
+              const { offsetTop, offsetHeight } = element;
+              if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                setActiveSection(section);
+                break;
+              }
+            }
           }
-        }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
+    // Set loaded state after initial render
+    const timer = setTimeout(() => {
+      setIsLoaded(true);
+    }, 100);
+
     // Scroll to home section on initial load (after DOM is ready)
     setTimeout(() => {
       const homeSection = document.getElementById('home');
@@ -45,12 +59,16 @@ function App() {
         window.scrollTo(0, 0);
       }
     }, 200); // Increased timeout for mobile devices
+
+    return () => clearTimeout(timer);
   }, []);
 
   // Custom cursor effect (desktop only)
   useEffect(() => {
     // Only add custom cursor on desktop devices
     if (window.innerWidth > 768) {
+      // Debug: Check if cursor is working
+      console.log('Initializing custom cursor for desktop');
       const cursor = document.createElement('div');
       cursor.className = 'custom-cursor';
       cursor.style.cssText = `
@@ -58,28 +76,48 @@ function App() {
         width: 20px;
         height: 20px;
         background: linear-gradient(45deg, #06b6d4, #3b82f6);
+        border: 2px solid rgba(255, 255, 255, 0.8);
         border-radius: 50%;
         pointer-events: none;
         z-index: 9999;
         mix-blend-mode: difference;
-        transition: transform 0.1s ease;
+        transform: translate3d(0, 0, 0);
+        will-change: transform;
+        transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        opacity: 0;
+        box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
       `;
       document.body.appendChild(cursor);
+      
+      // Show cursor after a short delay to ensure it's properly positioned
+      setTimeout(() => {
+        cursor.style.opacity = '1';
+        // Set initial position
+        cursor.style.transform = 'translate3d(0, 0, 0)';
+      }, 100);
 
+      let rafId: number;
+      let currentX = 0;
+      let currentY = 0;
+      
       const moveCursor = (e: MouseEvent) => {
-        cursor.style.left = e.clientX - 10 + 'px';
-        cursor.style.top = e.clientY - 10 + 'px';
+        cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(() => {
+          currentX = e.clientX - 10;
+          currentY = e.clientY - 10;
+          cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+        });
       };
 
       const scaleCursor = () => {
-        cursor.style.transform = 'scale(1.5)';
+        cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) scale(1.5)`;
       };
 
       const resetCursor = () => {
-        cursor.style.transform = 'scale(1)';
+        cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) scale(1)`;
       };
 
-      document.addEventListener('mousemove', moveCursor);
+      document.addEventListener('mousemove', moveCursor, { passive: true });
       document.addEventListener('mousedown', scaleCursor);
       document.addEventListener('mouseup', resetCursor);
 
@@ -90,20 +128,33 @@ function App() {
         el.addEventListener('mouseleave', resetCursor);
       });
 
+      // Fallback: show default cursor if custom cursor fails
+      const fallbackTimer = setTimeout(() => {
+        if (!cursor.parentNode) {
+          document.body.style.cursor = 'auto';
+        }
+      }, 2000);
+
       return () => {
         document.removeEventListener('mousemove', moveCursor);
         document.removeEventListener('mousedown', scaleCursor);
         document.removeEventListener('mouseup', resetCursor);
+        cancelAnimationFrame(rafId);
+        clearTimeout(fallbackTimer);
         if (document.body.contains(cursor)) {
           document.body.removeChild(cursor);
         }
+        // Restore default cursor
+        document.body.style.cursor = 'auto';
       };
     }
   }, []);
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-gray-900 dark:bg-gray-900 bg-white text-gray-900 dark:text-white overflow-x-hidden transition-colors duration-300">
+      <div className={`min-h-screen bg-gray-900 dark:bg-gray-900 bg-white text-gray-900 dark:text-white overflow-x-hidden transition-all duration-1000 ease-out smooth-animate ${
+        isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+      }`}>
         <Navigation activeSection={activeSection} setActiveSection={setActiveSection} />
         <Hero />
         <About />
